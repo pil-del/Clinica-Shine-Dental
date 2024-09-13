@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Doctores</title>
+    <link rel="shortcut icon" type="image/png" href="/images/shine.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <style>
+        /* Estilo para los botones de paginación */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            color: #007bff;
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            margin: 0 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Estilo para el botón de la página actual */
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            font-weight: bold;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+        }
+
+        /* Estilo para el botón de paginación al pasar el mouse por encima */
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            color: white;
+            background-color: #0056b3;
+            border: none;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-dark border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading text-white">
+                <div>
+                    <img src="/images/shine.png" alt="Logo" class="img-fluid mb-2" style="max-width: 50px;">
+                    SHINE DENTAL
+                </div>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="#clientes-pacientes-submenu" class="list-group-item list-group-item-action bg-dark text-white" data-toggle="collapse">
+                    <i class="fas fa-user"></i> Pacientes
+                </a>
+                <div id="clientes-pacientes-submenu" class="collapse">
+                    <a href="/admin/fichamedica" class="list-group-item list-group-item-action bg-dark text-white pl-4">Ficha Médica</a>
+                    <a href="/admin/citas" class="list-group-item list-group-item-action bg-dark text-white pl-4">Citas</a>
+                    <a href="/admin/historial" class="list-group-item list-group-item-action bg-dark text-white pl-4">Historial Tratamiento</a>
+                    <a href="/admin/pago" class="list-group-item list-group-item-action bg-dark text-white pl-4">Control de Pago</a>
+                </div>
+                <a href="#doctores-submenu" class="list-group-item list-group-item-action bg-dark text-white" data-toggle="collapse">
+                    <i class="fas fa-user-md"></i> Doctores
+                </a>
+                <div id="doctores-submenu" class="collapse">
+                    <a href="/admin/doctores" class="list-group-item list-group-item-action bg-dark text-white pl-4 active">Doctores</a>
+                    <a href="/admin/usuarios" class="list-group-item list-group-item-action bg-dark text-white pl-4">Usuarios Activos</a>
+                    <a href="/admin/usuariosinactivos" class="list-group-item list-group-item-action bg-dark text-white pl-4">Usuarios Inactivos</a>
+                </div>
+                <a href="#inventario-submenu" class="list-group-item list-group-item-action bg-dark text-white" data-toggle="collapse">
+                    <i class="fas fa-box"></i> Inventario
+                </a>
+                <div id="inventario-submenu" class="collapse">
+                    <a href="/admin/inventario" class="list-group-item list-group-item-action bg-dark text-white pl-4">Inventario</a>
+                    <a href="/admin/compra" class="list-group-item list-group-item-action bg-dark text-white pl-4">Compra</a>
+                </div>
+                <a href="/admin/reporte" class="list-group-item list-group-item-action bg-dark text-white"><i class="fas fa-file-alt"></i> Reportes</a>
+                <a href="/admin/dashboard" class="list-group-item list-group-item-action bg-dark text-white"><i class="fas fa-arrow-circle-left"></i> Regresar al Panel</a>
+                <a href="/admin/login" class="list-group-item list-group-item-action bg-danger text-white"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+            </div>
+            <!-- Botón de flecha -->
+            <button class="btn btn-dark toggle-btn" id="menu-toggle">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <h1 class="mt-4">Lista de Doctores</h1>
+                <div class="text-left mb-3">
+                    <a href="/admin/dashboard" class="btn btn-secondary">&larr; Regresar al Panel de Control</a>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#addDoctorModal">Agregar Doctor</button>
+                </div>
+
+                <!-- Barra de búsqueda -->
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Buscar doctor..." id="searchDoctor">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="searchButton">Buscar</button>
+                    </div>
+                </div>
+
+                <!-- Tabla de doctores -->
+                <div class="text-right mb-3">
+                </div>
+                <table class="table table-bordered" id="doctorTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Especialidad</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doctorList">
+                        <% doctores.forEach(function(doctor) { %>
+                        <tr>
+                            <td><%= doctor.iddoctor %></td>
+                            <td><%= doctor.nombre %></td>
+                            <td><%= doctor.especialidad %></td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" onclick="editarDoctor('<%= doctor.iddoctor %>', '<%= doctor.nombre %>', '<%= doctor.especialidad %>')">Editar</button>
+                                <button class="btn btn-danger btn-sm" onclick="eliminarDoctor('<%= doctor.iddoctor %>')">Eliminar</button>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>                    
+                </table>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Modal para agregar doctor -->
+<div class="modal fade" id="addDoctorModal" tabindex="-1" aria-labelledby="addDoctorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addDoctorModalLabel">Agregar Doctor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addDoctorForm">
+                    <div class="form-group">
+                        <label for="addDoctorUsuario">Usuario</label>
+                        <input type="text" id="addDoctorUsuario" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addDoctorPassword">Contraseña</label>
+                        <input type="password" id="addDoctorPassword" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addDoctorName">Nombre</label>
+                        <input type="text" id="addDoctorName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addDoctorApellido">Apellido</label>
+                        <input type="text" id="addDoctorApellido" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addDoctorSpecialty">Especialidad</label>
+                        <input type="text" id="addDoctorSpecialty" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addDoctorTelefono">Teléfono</label>
+                        <input type="text" id="addDoctorTelefono" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addDoctorEmail">Email</label>
+                        <input type="email" id="addDoctorEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addDoctorObservacion">Observación</label>
+                        <textarea id="addDoctorObservacion" class="form-control"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-success" onclick="guardarDoctor()">Guardar</button>
+                </form>                    
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Modal para editar doctor -->
+    <div class="modal fade" id="editDoctorModal" tabindex="-1" aria-labelledby="editDoctorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editDoctorModalLabel">Editar Doctor</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editDoctorForm">
+                        <input type="hidden" id="editDoctorId">
+                        <div class="form-group">
+                            <label for="editDoctorName">Nombre</label>
+                            <input type="text" id="editDoctorName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editDoctorSpecialty">Especialidad</label>
+                            <input type="text" id="editDoctorSpecialty" class="form-control" required>
+                        </div>
+                        <button type="button" class="btn btn-success" onclick="actualizarDoctor()">Guardar Cambios</button>
+                    </form>                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para confirmar eliminación de doctor -->
+    <div class="modal fade" id="deleteDoctorModal" tabindex="-1" aria-labelledby="deleteDoctorModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteDoctorModalLabel">Eliminar Doctor</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar este doctor?</p>
+                    <button type="button" class="btn btn-danger" onclick="confirmarEliminarDoctor()">Eliminar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/js/dashboard.js"></script>
+    <script>
+
+        $(document).ready(function() {
+            // Inicializa DataTables con opciones personalizadas
+            $('#doctorTable').DataTable({
+                destroy: true,  // Destruir cualquier tabla previamente inicializada
+                paging: true,
+                searching: false,
+                ordering: true,
+                info: true,
+                lengthChange: false,
+                language: {
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                    paginate: {
+                        next: ' Siguiente',
+                        previous: 'Anterior ',
+                    },
+                    emptyTable: 'No hay doctores disponibles'
+                },
+                order: []  // No establecer un orden por defecto al cargar la tabla
+            });
+        });
+
+        // Función para agregar doctor
+        function guardarDoctor() {
+            const name = $('#addDoctorName').val();
+            const specialty = $('#addDoctorSpecialty').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '/admin/doctores',
+                data: JSON.stringify({ nombre: name, especialidad: specialty }),
+                contentType: 'application/json',
+                success: function(response) {
+                    alert('Doctor agregado exitosamente.');
+                    $('#addDoctorModal').modal('hide');
+                    location.reload();
+                },
+                error: function(err) {
+                    console.error('Error al agregar doctor:', err);
+                }
+            });
+        }
+
+        // Función para editar doctor
+        function editarDoctor(id, nombre, especialidad) {
+            $('#editDoctorId').val(id);
+            $('#editDoctorName').val(nombre);
+            $('#editDoctorSpecialty').val(especialidad);
+            $('#editDoctorModal').modal('show');
+        }
+
+        // Guardar cambios al editar doctor
+        function actualizarDoctor() {
+            const id = $('#editDoctorId').val();
+            const name = $('#editDoctorName').val();
+            const specialty = $('#editDoctorSpecialty').val();
+
+            $.ajax({
+                type: 'PUT',
+                url: `/admin/doctores/${id}`,
+                data: JSON.stringify({ nombre: name, especialidad: specialty }),
+                contentType: 'application/json',
+                success: function(response) {
+                    alert('Doctor actualizado exitosamente.');
+                    $('#editDoctorModal').modal('hide');
+                    location.reload();
+                },
+                error: function(err) {
+                    console.error('Error al actualizar doctor:', err);
+                }
+            });
+        }
+
+        // Función para eliminar doctor
+        function eliminarDoctor(id) {
+            $('#deleteDoctorModal').data('doctor-id', id).modal('show');
+        }
+
+        function confirmarEliminarDoctor() {
+            const id = $('#deleteDoctorModal').data('doctor-id');
+            
+            $.ajax({
+                type: 'DELETE',
+                url: `/admin/doctores/${id}`,
+                success: function(response) {
+                    alert('Doctor eliminado exitosamente.');
+                    $('#deleteDoctorModal').modal('hide');
+                    location.reload();
+                },
+                error: function(err) {
+                    console.error('Error al eliminar doctor:', err);
+                }
+            });
+        }
+
+        // Búsqueda de doctores
+        $('#searchButton').click(function() {
+            const query = $('#searchDoctor').val().toLowerCase();
+            $('#doctorTable tbody tr').each(function() {
+                const nombre = $(this).find('td:nth-child(2)').text().toLowerCase();
+                if (nombre.includes(query)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

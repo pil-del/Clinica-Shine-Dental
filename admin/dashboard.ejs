@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Administrador</title>
+    <link rel="shortcut icon" type="image/png" href="/images/shine.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-dark border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading text-white">
+                <div>
+                    <img src="/images/shine.png" alt="Logo" class="img-fluid mb-2" style="max-width: 50px;">
+                    SHINE DENTAL
+                </div>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="#clientes-pacientes-submenu" class="list-group-item list-group-item-action bg-dark text-white" data-toggle="collapse">
+                    <i class="fas fa-user"></i> Pacientes
+                </a>
+                <div id="clientes-pacientes-submenu" class="collapse">
+                    <a href="/admin/fichamedica" class="list-group-item list-group-item-action bg-dark text-white pl-4">Ficha Médica</a>
+                    <a href="/admin/citas" class="list-group-item list-group-item-action bg-dark text-white pl-4">Citas</a>
+                    <a href="/admin/historial" class="list-group-item list-group-item-action bg-dark text-white pl-4">Historial Tratamiento</a>
+                    <a href="/admin/pago" class="list-group-item list-group-item-action bg-dark text-white pl-4">Control de Pago</a>
+                </div>
+                <a href="#doctores-submenu" class="list-group-item list-group-item-action bg-dark text-white" data-toggle="collapse">
+                    <i class="fas fa-user-md"></i> Doctores
+                </a>
+                <div id="doctores-submenu" class="collapse">
+                    <a href="/admin/doctores" class="list-group-item list-group-item-action bg-dark text-white pl-4">Doctores</a>
+                    <a href="/admin/usuarios" class="list-group-item list-group-item-action bg-dark text-white pl-4">Usuarios Activos</a>
+                    <a href="/admin/usuariosinactivos" class="list-group-item list-group-item-action bg-dark text-white pl-4">Usuarios Inactivos</a>
+                </div>
+                <a href="#inventario-submenu" class="list-group-item list-group-item-action bg-dark text-white" data-toggle="collapse">
+                    <i class="fas fa-box"></i> Inventario
+                </a>
+                <div id="inventario-submenu" class="collapse">
+                    <a href="/admin/inventario" class="list-group-item list-group-item-action bg-dark text-white pl-4">Inventario</a>
+                    <a href="/admin/compra" class="list-group-item list-group-item-action bg-dark text-white pl-4">Compra</a>
+                </div>
+                <a href="/admin/reporte" class="list-group-item list-group-item-action bg-dark text-white"><i class="fas fa-file-alt"></i> Reportes</a>
+                <a href="/admin/dashboard" class="list-group-item list-group-item-action bg-dark text-white"><i class="fas fa-arrow-circle-left"></i> Regresar al Panel</a>
+                <a href="/admin/login" class="list-group-item list-group-item-action bg-danger text-white"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+            </div>
+            <!-- Botón de flecha -->
+            <button class="btn btn-dark toggle-btn" id="menu-toggle">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <h1 class="mt-4">Panel de Control</h1>
+                <p>Bienvenido al sistema de gestión de la clínica dental.</p>
+
+                <!-- Tarjetas de resumen -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card text-white bg-primary mb-3">
+                            <div class="card-header">Usuarios Activos</div>
+                            <div class="card-body">
+                                <h5 class="card-title">120</h5>
+                                <p class="card-text">Usuarios que han iniciado sesión en los últimos 30 días.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-success mb-3">
+                            <div class="card-header">Pacientes</div>
+                            <div class="card-body">
+                                <h5 class="card-title">25</h5>
+                                <p class="card-text">Pacientes atendidos este mes.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-warning mb-3">
+                            <div class="card-header">Nuevos Pacientes</div>
+                            <div class="card-body">
+                                <h5 class="card-title">8</h5>
+                                <p class="card-text">Nuevos pacientes atendidos este mes.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-danger mb-3">
+                            <div class="card-header">Incidencias</div>
+                            <div class="card-body">
+                                <h5 class="card-title">5</h5>
+                                <p class="card-text">Incidencias reportadas por los usuarios.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección de gráficos -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <canvas id="userChart"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <canvas id="reportChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+    </div>
+    <!-- /#wrapper -->
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script>
+        // Funcionalidad del botón para ocultar/mostrar el menú
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+            // Cambiar la flecha de dirección al togglear
+            $(this).find("i").toggleClass("fa-chevron-left fa-chevron-right");
+        });
+    </script>
+</body>
+</html>

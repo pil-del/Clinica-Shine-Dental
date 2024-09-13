@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Shine Dental</title>
+    <link rel="shortcut icon" type="image/png" href="/images/shine.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/login.css">
+    <style>
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .login-box {
+            background: #fff;
+            border-radius: .5rem;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .logo {
+            max-width: 100%;
+            height: auto;
+        }
+        .footer {
+            background: #343a40;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="row w-100">
+            <div class="col-md-6 text-center d-flex align-items-center justify-content-center">
+                <img src="/images/ogo.png" alt="Logo ShineDental Center" class="img-fluid logo" style="width: 300px;">
+            </div>
+            <div class="col-md-6 d-flex align-items-center">
+                <div class="login-box p-5 shadow">
+                    <h2 class="text-center mb-4">Iniciar Sesión</h2>
+                    <form action="/auth" method="post">
+                        <div class="form-group">
+                            <label for="username">Usuario</label>
+                            <input type="text" id="username" name="usuario" class="form-control" placeholder="Usuario" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Contraseña</label>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Ingresa tu clave de usuario" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">INICIAR SESIÓN</button>
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <a href="/admin/registro" class="btn btn-secondary btn-block">Registrarse </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="/" class="btn btn-secondary btn-block">Regresar</a>
+                            </div>
+                        </div>
+                    </form>                                                                                
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer mt-auto py-3 text-center text-white">
+        <div class="container">
+            <small>Dirección: 11 av. 3-07 Residenciales Ribera del Río, San Miguel Petapa.<br>
+            Teléfono: +(502) 5319-3185</small>
+        </div>
+    </footer>
+</body>
+</html>
